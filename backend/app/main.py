@@ -1,0 +1,25 @@
+from fastapi import FastAPI
+from app.config import settings
+from app.api.v1.router import api_router
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI(
+    title="Office Management System API",
+    version="1.0.0",
+    description="Role-based backend: Super Admin, Director, General Manager, Line Manager, Staff",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(api_router, prefix="/api/v1")
+
+
+@app.get("/health", tags=["Health"])
+def health_check():
+    return {"status": "ok", "app": settings.APP_NAME}
